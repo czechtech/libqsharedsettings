@@ -38,13 +38,13 @@ Add a persistent QSharedSettings member to the main class definition.
 
 Declare and define an appropriate slot.
 
-    void onChangedSetting(QString key)  { ... }
+    void onChangedSettings(QStringList keys)  { ... }
 
 Connect the signal/slot in the constructor of your main class.
 
-    connect(&m_setting, SIGNAL(settingChanged(QString)), this, SLOT(onChangedSetting(QString)));
+    connect(&m_settings, SIGNAL(settingsChanged(QStringList)), this, SLOT(onChangedSettings(QStringList)));
 
-Now, whenever a setting is changed, the settingChanged(...) signal is added to the event queue with the key of the setting which changed.  The onChangedSetting(...) slot is called, and the application can respond appropriately.
+Now, whenever a setting or settings are changed, the settingsChanged(...) signal is added to the event queue with the keys of the settings which have changed.  The onChangedSettings(...) slot is called, and the application can respond appropriately.
 
 Notes
 -----
@@ -62,18 +62,16 @@ Included with the library is a demonstration.
     cd libqsharedsettings-master/test
     qmake && make
 
-To see the demonstration, launch (and leave executing) the test program from two different terminals.
+To see the demonstration, launch the test program.
 
     ./test
 
-Each time "test" is executed it changes a QSharedSetting with the key "RandomNumber".
+When "test" is executed it adds some settings, changes a setting, and removes a couple settings.  The screen output occurs within Qt's main event loop.  To truely appreciate what QSharedSettings can do, launch (and leave executing) the test program from two different terminals.  Ctrl-C interrupts the program to exit.
 
 
 To Do
 -----
 
-- Add a bool moreChanges() method to allow applications to batch settings changes.
-- Change the signal to be settingsChanged(QStringList keys)?
 - Get away from the internal manual polling!
 - Consider a mechanism to control which settings are shared, which are not.
 
