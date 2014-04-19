@@ -53,6 +53,8 @@ Before changing any settings internally, it sometimes makes sense to disconnect 
 
 QSharedSettings creates another mechanism of inter-process communication.  But, keep in mind, access to QSettings is restricted based on the [QSettings Fallback Mechanism](qt-project.org/doc/qt-4.8/qsettings.html#fallback-mechanism)
 
+The settingsChanged(...) signal does not differentiate between changed/added/removed.  QSettings::contains(QString key) is most helpful.
+
 
 Test Program
 ------------
