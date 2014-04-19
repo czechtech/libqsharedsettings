@@ -1,6 +1,7 @@
 CONFIG  += debug
 CONFIG  -= app_bundle
 QT      -= gui
+QT      += testlib
 
 TEMPLATE = app
 CONFIG  += console

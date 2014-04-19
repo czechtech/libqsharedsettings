@@ -3,6 +3,7 @@
 #include <QCoreApplication>
 #include <QTime>
 #include <QDebug>
+#include <QTest>
 #include "../qsharedsettings.h"
 
 using namespace std;
@@ -37,11 +38,47 @@ int main(int argc, char *argv[])
 
   QObject::connect(&s, SIGNAL(settingsChanged(QStringList)), &t, SLOT(onChangedSettings(QStringList)));
 
-  qDebug() << "RandomNumber is currently: " << s.value("RandomNumber");
+  // Display All Settings
+  qDebug() << "Current Settings:";
+  QStringList keylist = s.allKeys();
+  for(int i = 0; i < keylist.size(); i++) {
+    qDebug() << "Key: " << keylist[i] << "Value:" << s.value(keylist[i]);
+  }
+  
+  QTest::qWait(1000);
+  
+  // Add A New Setting
+  qDebug() << "Adding New Setting...";;
+  QString add1 = "Rand" + QString::number(QTime::currentTime().msec());
+  int val1 = QTime::currentTime().msec();
+  s.setValue(add1, val1);
 
-  qDebug() << "Changing RandonNumber value now...";
-  QTime now = QTime::currentTime();
-  s.setValue("RandomNumber", now.msec());
+  QTest::qWait(1000);
+
+  // Remove 2 Settings
+  if(s.allKeys().size() > 2) {
+    qDebug() << "Deleting 2 Settings...";
+    QString delKey1 = s.allKeys()[0];
+    QString delKey2 = s.allKeys()[1];
+    s.remove(delKey1);
+    s.remove(delKey2);
+  }
+
+  QTest::qWait(1000);
+
+  // Add A New Setting
+  qDebug() << "Adding Another New Setting...";
+  QString add2 = "Rand" + QString::number(QTime::currentTime().msec());
+  int val2 = QTime::currentTime().msec();
+  s.setValue(add2, val2);
+  
+  QTest::qWait(1000);
+
+  // Change 1 Setting
+  if(s.allKeys().size() > 0) {
+    qDebug() << "Changing A Setting...";
+    s.setValue(s.allKeys()[0], QTime::currentTime().msec());
+  }
   
   return a->exec();
 }
