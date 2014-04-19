@@ -39,8 +39,7 @@ void QSharedSettings::initialize()
     connect(&m_pollingTimer, SIGNAL(timeout()), this, SLOT(checkSettings()) );
 
 	// start the polling timer
-	m_pollingTimer.setInterval(1000);
-	m_pollingTimer.start();
+	m_pollingTimer.start(1000);
 }
 
 
