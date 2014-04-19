@@ -55,46 +55,37 @@ QSharedSettings::~QSharedSettings()
 void QSharedSettings::checkSettings()
 {
 	sync();
-	QStringList currentKeys = allKeys();
-	
-	int currentSize = currentKeys.size();
-	int storedSize  = m_storedSettings.keys().size();
-	
-	// FIX ME: This is not a robust method of making sure the key lists are identical
-	
-	// check for removed key,value pairs:
-	if(currentSize < storedSize) {
-		QStringList storedKeys = m_storedSettings.keys();
-		for(int i = 0; i < currentSize; i++) {
-			int index = storedKeys.indexOf(currentKeys[i]);
-			if(index != -1) {
-				storedKeys.removeAt(index);
-			} else {
-				emit settingChanged(currentKeys[i]);
-			}
+
+	QStringList changedKeys = allKeys();
+
+	// Check each stored key,value
+	for(QList<QString> storedKeys = m_storedSettings.keys(); storedKeys.size() > 0; storedKeys.removeFirst()) {
+		QString k = storedKeys.first();
+		if(!changedKeys.contains(k)) {
+			// it's been removed
+			changedKeys.append(k);
+			m_storedSettings.remove(k);
 		}
+		else if(m_storedSettings.value(k) == value(k) ) {
+			// it's not been changed
+			changedKeys.removeAll(k);
+		}
+		else {
+			// update the stored value
+			m_storedSettings[k] = value(k);
+		}
+
 	}
 	
-	// check for new key,value pairs:
-	if(currentSize > storedSize) {
-		QStringList storedKeys = m_storedSettings.keys();
-		for(int i = 0; i < storedSize; i++) {
-			int index = currentKeys.indexOf(storedKeys[i]);
-			if(index != -1) {
-				currentKeys.removeAt(index);
-			} else {
-				emit settingChanged(storedKeys[i]);
-			}
+	// Store any new settings
+	for(int i = 0; i < changedKeys.size(); i++) {
+		QString k = changedKeys[i];
+		if(!m_storedSettings.contains(k) && contains(k)) {
+			m_storedSettings[k] = value(k);
 		}
-		currentKeys = allKeys();
 	}
-	
-	// check values:
-	for (int i = 0; i < currentKeys.size(); i++) {
-		QString key = currentKeys[i];
-		if(m_storedSettings.value(key) != value(key) ) {
-			emit settingChanged(key);
-			m_storedSettings[key] = value(key);
-		}
+
+	if(changedKeys.size() > 0) {
+		emit settingsChanged(changedKeys);
 	}
 }

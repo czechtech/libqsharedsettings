@@ -15,9 +15,14 @@ class TestClass: public QObject
 {
     Q_OBJECT
 public slots:
-	void onChangedSetting(QString key)  {
-		QSharedSettings s("CzechTech", "QSharedSettingsDemo");
-		qDebug() << key << " changed to " << s.value(key);
+	void onChangedSettings(QStringList keys)  {
+		QSettings s("CzechTech", "QSharedSettingsDemo");
+		for(int i = 0; i < keys.size(); i++) {
+			QString  key   = keys.at(i);
+			QVariant value = s.value(key);
+			if(!s.contains(key)) { value = "(removed)"; }
+			qDebug() << "CHANGE:" << key << " is now " << value;
+		}
 	}
 };
 
@@ -30,7 +35,7 @@ int main(int argc, char *argv[])
   TestClass t;
   QSharedSettings s("CzechTech", "QSharedSettingsDemo");
 
-  QObject::connect(&s, SIGNAL(settingChanged(QString)), &t, SLOT(onChangedSetting(QString)));
+  QObject::connect(&s, SIGNAL(settingsChanged(QStringList)), &t, SLOT(onChangedSettings(QStringList)));
 
   qDebug() << "RandomNumber is currently: " << s.value("RandomNumber");
 

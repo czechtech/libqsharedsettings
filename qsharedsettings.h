@@ -41,7 +41,7 @@ private slots:
 	void checkSettings();
 
 signals:
-	void settingChanged(QString key);
+	void settingsChanged(QStringList keys);
 
 };
 
