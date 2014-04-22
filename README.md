@@ -74,7 +74,8 @@ When "test" is executed it adds some settings, changes a setting, and removes a 
 To Do
 -----
 
-- Get away from the internal manual polling!
+- Get away from the internal manual polling!,
+- Reimplement signalling each setting change so users can decide, and
 - Consider a mechanism to control which settings are shared, which are not.
 
 The code functions well, but it could use some enhancements and bullet-proofing.
